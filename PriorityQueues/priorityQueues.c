@@ -1,116 +1,93 @@
+/*IMPLÉMENTATION D'UNE FILE DE PRIORITE AVEC UNE SD TAS*/
+
 #include <stdio.h>
-#include <stdlib.h>
+#define MAX 100
+int tas[MAX];
+int n = 0;
 
-//function to get max value
-int getMaxValue(int heapTab[], int size){
-    int maxValue = heapTab[0];
 
-    //Algorithm to find max value
-    for(int i = 0; i < size; i++){
-        if(maxValue < heapTab[i]) 
-            maxValue = heapTab[i];
+// Fonction pour afficher
+void afficher(){
+    int i;
+    if (n == 0){
+        printf("Tas Vide ! \n");
+        return;
     }
 
-    return maxValue;
-}
-
-//function to get min value
-int getMinValue(int heapTab[], int size){
-    int minValue = heapTab[0];
-
-    //Algorithm to find min value
-    for(int i = 0; i < size; i++){
-        if(minValue > heapTab[i]) 
-            minValue = heapTab[i];
-    }
-    
-    return minValue;
-}
-
-//function to permute two values
-void permute(int *a, int *b){
-    int tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-
-//function to get parent's index
-int parent(int index){
-    int parentIndex = (int)(index - 1) / 2 ;
-    return parentIndex;
-}
-
-//function to get left children's index
-int leftChildren(int index){
-    int leftChildren = (int)(2*index + 1);
-    return leftChildren;
-}
-
-//function to get right children's index
-int rightChildren(int index){
-    int rightChildren = (int)(2*index + 2);
-    return rightChildren;
-}
-
-int main(){
-    int heapTab[20];
-    int n, i, j;
-
-    //get a number max for heapTab
-    do{
-        printf("Enter a number (n < 0): ");
-        scanf("%d", &n);
-    }while (n <= 0 && n > 20);
-
-    //Get each element value
-    printf("============== GET ELEMENT =============\n");
-    for (i = 0; i < n; i++){
-        printf("Element %d: ", i + 1);
-        scanf("%d", &heapTab[i]);
-    }
-
-    //Display each value
-    printf("============== DISPLAY ELEMENT =============\n");
-    for(i = 0; i < n; i++){
-        printf("Index %d ==> %d\n", i, heapTab[i]);
-    }
-
-
-    printf("\n===> Max Value: %d", getMaxValue(heapTab, n)); //Display max value
-    printf("\n===> Min Value: %d", getMinValue(heapTab, n));  //Display min value
-
-    //Function to show parent of each element
-    printf("\n\n====================== PARENT =========================");
-    printf("\nRoot : %d", heapTab[0]);
-    for(int parentIndex = 0, i = 0; i < n; i++){
-        parentIndex = parent(i);
-
-        if(parentIndex > 0){
-            printf("\nValue: %d ==> Parent: %d",heapTab[i],heapTab[parentIndex]);
-        }
-    }
-
-    printf("\n\n====================== LEFT CHILDREN =========================");
-    //Function to show left children of each element
-    for(int leftChildrenIndex = 0, i = 0; i < n; i++){
-        leftChildrenIndex = leftChildren(i);
-
-        if(leftChildrenIndex <= (n - 1)){
-            printf("\nValue: %d ==> Left children: %d",heapTab[i],heapTab[leftChildrenIndex]);
-        }
-    }
-
-    printf("\n\n====================== RIGHT CHILDREN =========================");
-    //Function to show right children of each element
-    for(int rightChildrenIndex = 0, i = 0; i < n; i++){
-        rightChildrenIndex = rightChildren(i);
-
-        if(rightChildrenIndex <= n){
-            printf("\nValue: %d ==> Right children: %d",heapTab[i],heapTab[rightChildrenIndex]);
-        }
-    }
-    
+    for(i = 0; i < n; i++) printf("%d", tas[i]);
     printf("\n");
-    return 0;
 }
+
+// Fonction pour inserer
+void inserer(int priorite){
+    int i, parent, temp;
+    if(n == MAX){
+        printf("Tas Plein !\n");
+        return;
+    }
+
+    //Placer le nouveau à la première position libre
+    tas[n] = priorite;
+    //Remonter ce noeud en permutant avec le parent jusqu'à l'obtention d'un tas
+    i = n;
+    n++;
+
+    while(i > 0){
+        parent = (i - 1) / 2;
+        if(tas[parent] >= tas[i]) break;
+
+        temp = tas[parent];
+        tas[parent] = tas[i];
+        tas[i] = temp;
+
+        i = parent;
+    }
+
+    afficher();
+}
+
+// Fonction pour lire le maximum valeur
+int lireMax(){
+    if(n == 0){
+        printf("Tas Vide! \n");
+        return -1;
+    }
+    return tas[0];
+}
+
+// Fonction pour extraire le maximum valeur
+int extraireMax(){
+    int i, racine, gauche, droite, plusGrandFils, temp;
+    if(n == 0) {
+        printf("Tas Vide! \n");
+        return -1;
+    }
+
+    racine = tas[0];
+    //Remplacer la racine par le dernier noeud
+    tas[0] = tas[n - 1];
+    //Supprimer le dernier noeud (l'ancienne racine)
+    n--;
+    //Redescendre la racine en permutant avec le plus grand fils si nécéssaire
+    i = 0;
+
+    while(2 * i + 1 < n){
+        gauche = 2 * i + 1;
+        droite = 2 * i + 2;
+        plusGrandFils = gauche;
+
+        if(droite < n && tas[droite] > tas[gauche])
+            plusGrandFils = droite;
+        if(tas[i] >= tas[plusGrandFils])
+            break;
+
+        temp = tas[i];
+        tas[i] = tas[plusGrandFils];
+        tas[plusGrandFils] = temp;
+        i = plusGrandFils;
+    }
+    
+    return racine;
+}
+
 
