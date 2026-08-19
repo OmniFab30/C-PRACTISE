@@ -7,7 +7,7 @@ int main()
     int length = sizeof(numberList) / sizeof(numberList[0]);
     
     puts("#Before Sorting\r");
-    for(i = 0; i < length; i++) 
+    for(i = 0; i < length; i++)
         printf("%5d", numberList[i]);
     
     //algorithm for sequential sorting
