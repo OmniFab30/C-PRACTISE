@@ -16,7 +16,6 @@ int main(){
         i, pairLength = 0,
         length = sizeof(numberList) / sizeof(numberList[0]);
 
-    printf("%d\n", pairLength);
     //get only the pair number of the list
     for(i = 0; i < length; i++){
         if(numberList[i] % 2 == 0) {
